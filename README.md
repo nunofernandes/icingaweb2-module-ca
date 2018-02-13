@@ -53,7 +53,7 @@ runas = "icinga"
 Sign Screenshot
 ![CA - Sign Menu](doc/screenshot/sign.png)
 
-Module Informatio Screenshot
+Module Information Screenshot
 ![CA - Module Info](doc/screenshot/module.png)
 
 Module Config Screenshot
