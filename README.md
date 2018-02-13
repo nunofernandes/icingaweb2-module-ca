@@ -31,18 +31,22 @@ Nothing special. As with every Icinga Web 2 module, drop this to one of your
 server doesn't run as icinga, we need to allow for the sudo operations:
 
 vi /etc/sudoers.d/apache
-	Cmnd_Alias      CA_CMDS = /usr/sbin/icinga2 ca list, /usr/sbin/icinga2 ca sign *
-	Cmnd_Alias      APACHE_COMMANDS = CA_CMDS
-	User_Alias      APACHEUSERS = apache
+```
+Cmnd_Alias      CA_CMDS = /usr/sbin/icinga2 ca list, /usr/sbin/icinga2 ca sign *
+Cmnd_Alias      APACHE_COMMANDS = CA_CMDS
+User_Alias      APACHEUSERS = apache
 
-	Defaults:APACHEUSERS        !requiretty
-	APACHEUSERS   ALL = (icinga) NOPASSWD: APACHE_COMMANDS
+Defaults:APACHEUSERS        !requiretty
+APACHEUSERS   ALL = (icinga) NOPASSWD: APACHE_COMMANDS
+```
 
 vi /etc/icingaweb2/modules/ca/config.ini
-	[config]
-	icinga2 = "/usr/sbin/icinga2"
-	sudo = "/usr/bin/sudo"
-	runas = "icinga"
+```
+[config]
+icinga2 = "/usr/sbin/icinga2"
+sudo = "/usr/bin/sudo"
+runas = "icinga"
+```
 
 ## Screenshots
 
