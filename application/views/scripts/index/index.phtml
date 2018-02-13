@@ -1,0 +1,47 @@
+<div class="controls">
+    <?= /** @var \Icinga\Web\Widget\Tabs $tabs */ $tabs ?>
+</div>
+
+<div class="content">
+<?php if ($this->authz == false): ?>
+    <p><?= $this->authmsg ?></p>
+<?php return; endif ?>
+<?php if ($this->sign): ?>
+    <h2><?= $this->translate('Signing Certificate...') ?></h2>
+    <pre><?= $this->sign ?></pre>
+<?php return; endif ?>
+    <h2><?= $this->translate('Certificate List') ?></h2>
+    <table class="name-value-table">
+    <thead>
+	<tr>
+	 <td><?= $this->translate('Fingerprint') ?></td>
+	 <td></td>
+	 <td><?= $this->translate('Timestamp') ?></td>
+	 <td><?= $this->translate('Signed') ?></td>
+	 <td><?= $this->translate('Subject') ?></td>
+	</tr>
+    </thead>
+    <tbody>
+<?php foreach ($calist as $cert): ?>
+	<tr>
+          <td class="left"><?php print $cert['fingerprint']; ?></td>
+          <td class="left"><?php if ($cert['signed'] != "*") { 
+		printf('<a href="%s"%s>%s</a>',
+			$this->url('ca', array('fingerprint' => $cert['fingerprint']) ),
+         		$this->propertiesToString(array(
+				'alt' => $this->translate('Sign Certificate'),
+				'title' => $this->translate('Sign Certificate')
+			)),
+            '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAACdlBMVEVRXmdKVl5ET1dFUFgAAABDT1ZFUFhNWmNET1cvNztFUFhLWGBGUlo7RUxFUFg/SlFFUFg1PkRTYWpbanRNW2NPXGVLV19MWWFIU1pMWF9IU1l+houVnaOWnqSWnqRRXmZYZW1XZG1XZG1PXWZFUVlBTFRBTFNATFNATFNPXWZFUVg5Q0lJVVxLV19LV19PXWZGUVk/SlFNWmNPXWVPXWVPXWVPXWVPXWVPXWVPXWVPXWVPXWVNWmI/SlFGUVlPXWZFUVkvNz1ASlFBTVRBTFRBTFM8Rk1OW2NNWmJNWmI2P0Q0PUFJVl1MWWFFUVlPXWZFUVk8R05KV19MWWFMWWFLWGA/SVAsNDlGUlpJVl5JVV1IVFw4QUdFUVlPXWZFUVkkKy86Q0o7RUw7RUw7RUsxOT8AAABIVV1OXGRMWWJMWGFOXGRLV2AeIyZFUVlPXWZFUVlCTVROW2RJVl4oLjMTFhlHU1tOXGRGUlpFUFhPXWZFUVlNWmJPXWVET1cnLjFMWGFHVFtET1ZPXWZFUVlLV19PXGVEUFg5QklNWmJIVFxET1ZFUVk9R05NW2NMWWJFUVhGUllLWGBOXGREUFdFUVhPXWZFUFhHU1tQXmZPXWZPXWZQXmdLV19FUVhQXWZQXWZSYGlSYGlSYGlSYGlSYGlQXmZOW2NHU1tNWmJPXWZQXmZSYGlQXWZIVVxMWGFMWGFMWGFMWGFMWGFMWGFMWGFNWmJNWmNBTFRHU1pPXWVOW2NLWGEAAAAAAAAAAABFUFhQXWZOXGVPXGVQXWZKV19FUFhOW2RIVFxFUVlNWmJKVl5DTFJFUFcAAABCTFNIUln///8T/VLpAAAA0XRSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKFBQUp8TCwvFzS0pKSuszE1leXesyKq+4uLi6u7u7u7uyKzLrNAs1ODg3GAcHBQUFBAc16zIvw87NykYEPYCGTQk16zQGJScnJg0BZ924r96GBDTrNSjXcQcDUN5DMus1T9IZCbh1Mus1R9gmEcRtMTUXw6IqIoTXKzLrNU/x3tn2dTXxnoKDg4OCn9pTQ8myf553n5+fn5+fnrfWVk3Bxp4AAAA56+jm9F43xFxJvloUJAAbHmPqyCIAAAABYktHRNF50f8KAAAAB3RJTUUH4gIFDgUh4cZ6agAAAS9JREFUGNNjkJaRlUMCsjLSDPIKikpIQFFBnkFZRVVNXQMK1NVUVZQZNLW0dXT1oEBXR1tLk0HfwNDI2MTUzNzCwtLK2sbWTp/B3sHRydnF1c3dw9PL28eXwc+ewT8gMCg4JDSMMTwiMio6hinWnyEuPiExKTklNS09IzMrOyc3L44hv4CZBQhYC4uKS0rLyisq8xmqqtlAQuw1tXUcnPUNjU1VDM0tXCAh7ta2dh7ejs6u7maGuB4+kBB/b1//hImTJk+ZGscwbboASEhQaMbMWbPnzBWeN41h/oKFixYtWrxk6bLlK1auWr1m7XyGdes3bNy0cfOWrdu279i5a/ee9esY9u7bDwYiBw4eOnzkqOi+vQwsUCB27PiJk6dOi7OwwIUkzpw9J3n+ghQLCwAJaGobVywa5wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxOC0wMi0xMlQyMToxOTo1NyswMDowMDusSNYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTgtMDItMDVUMTQ6MDU6MzMrMDA6MDC4ckdOAAAAAElFTkSuQmCC">'
+        );
+		 } ?>
+	  </td>
+          <td class="left"><?php print $cert['timestamp']; ?></td>
+          <td class="left"><?php print $cert['signed']; ?></td>
+          <td class="left"><?php print $cert['subject']; ?></td>
+        </tr>
+          <?php endforeach ?>
+    </tbody>
+    </table>
+</div>
+
