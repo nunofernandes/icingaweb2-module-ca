@@ -10,8 +10,8 @@
 
 ## About
 
-The Certificate Authority Module for Icinga Web 2 allows for the user to manage the
-local Certification Authority.
+The Certificate Authority Module for Icinga Web 2 allows the user to manage the
+local Icinga Certification Authority.
 
 ## Requirements
 
@@ -28,10 +28,23 @@ General Public License Version 2, you will find a copy of this license in the
 
 Nothing special. As with every Icinga Web 2 module, drop this to one of your
 `modules` folders and make sure that the folder name is `ca`. Because the web
-server doesn't run as icinga, we need to allow for the sudo operations:
+server doesn't run as `icinga` user, we need to allow for the sudo operations:
 
-vi /etc/sudoers.d/apache
+### Installation
+
+1. Download the [latest version](https://github.com/nunofernandes/icingaweb2-module-ca/releases) as tarball
+2. Extract the tarball in the Icinga Web 2 `modules` directory
+3. Make sure the CA module folder is named `ca`
+
+**For Developers only**
+
+Clone the repository via Git to your Icinga Web 2 `modules` directory.
+
+### Configuration
+
 ```
+# vi /etc/sudoers.d/apache
+
 Cmnd_Alias      CA_CMDS = /usr/sbin/icinga2 ca list, /usr/sbin/icinga2 ca sign *
 Cmnd_Alias      APACHE_COMMANDS = CA_CMDS
 User_Alias      APACHEUSERS = apache
@@ -40,8 +53,9 @@ Defaults:APACHEUSERS        !requiretty
 APACHEUSERS   ALL = (icinga) NOPASSWD: APACHE_COMMANDS
 ```
 
-vi /etc/icingaweb2/modules/ca/config.ini
 ```
+# vi /etc/icingaweb2/modules/ca/config.ini
+
 [config]
 icinga2 = "/usr/sbin/icinga2"
 sudo = "/usr/bin/sudo"
