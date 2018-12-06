@@ -72,7 +72,8 @@ class IndexController extends Controller
 	$command = $this->command . " ca list";
 	$output = shell_exec($command." 2>&1");
 
-        $lines = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
+        $temp = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
+        $lines = preg_grep('/RLIMIT_/', $temp, PREG_GREP_INVERT);
 	# remove first 2 elements
         unset($lines[0]);
         unset($lines[1]);
