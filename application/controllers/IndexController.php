@@ -74,10 +74,10 @@ class IndexController extends Controller
 
         $temp = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
         $lines = preg_grep('/RLIMIT_/', $temp, PREG_GREP_INVERT);
+        $lines = array_values($lines);
 	# remove first 2 elements
         unset($lines[0]);
         unset($lines[1]);
-        $lines = array_values($lines);
 
 	$result = array();
         foreach ($lines as $line) {
