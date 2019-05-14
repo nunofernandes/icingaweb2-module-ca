@@ -45,7 +45,7 @@ Clone the repository via Git to your Icinga Web 2 `modules` directory.
 ```
 # vi /etc/sudoers.d/apache
 
-Cmnd_Alias      CA_CMDS = /usr/sbin/icinga2 ca list, /usr/sbin/icinga2 ca sign *
+Cmnd_Alias      CA_CMDS = /usr/sbin/icinga2 ca list, /usr/sbin/icinga2 ca sign *, /usr/sbin/icinga2 ca list --all
 Cmnd_Alias      APACHE_COMMANDS = CA_CMDS
 User_Alias      APACHEUSERS = apache
 

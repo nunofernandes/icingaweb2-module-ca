@@ -67,11 +67,41 @@ class IndexController extends Controller
 	return $output;
     }
 
+    public function icinga2Version()
+    {
+		$command = $this->icinga2bin . " --version";
+		$output = shell_exec($command." 2>&1");
+
+		$temp = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
+		$lines = preg_grep('/RLIMIT_/', $temp, PREG_GREP_INVERT);
+		$lines = array_values($lines);
+		# get first line
+		$version = $lines[0];
+		# Match version string
+		if (preg_match('/r(\d+)\.(\d+)/', $version, $matches)) {
+			$ret['major'] = $matches[1];
+			$ret['minor'] = $matches[2];
+			return $ret;
+		} else {
+			return;
+		}
+    }
+
     public function parseIcingaCaList()
     {
-	$command = $this->command . " ca list";
-	$output = shell_exec($command." 2>&1");
+		# check version of icinga2 (https://github.com/nunofernandes/icingaweb2-module-ca/issues/6)
+		$version = $this->icinga2Version();
+		if (!empty($version) and !empty($version['major']) and !empty($version['minor'])) {
+			if ($version['major'] == "2" and ((int)$version['minor'])<11) {
+				$command = $this->command . " ca list";
+			} else {
+				$command = $this->command . " ca list --all";
+			}
+		} else { # fallback to the new defaults and hope for the best
+			$command = $this->command . " ca list --all";
+		}
 
+		$output = shell_exec($command." 2>&1");
         $temp = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
         $lines = preg_grep('/RLIMIT_/', $temp, PREG_GREP_INVERT);
         $lines = array_values($lines);
