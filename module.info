@@ -1,5 +1,5 @@
 Name: Ca
-Version: 1.0.2
+Version: 1.0.3
 Depends: monitoring (>= 2.5.1)
 Description: Icinga CA Manager
  This module manages the certificate requests for Icinga CA.
