@@ -46,7 +46,15 @@ class IndexController extends Controller
                     ))->activate('ca');
 
 	    if($this->params->isEmpty()) {
-	         $this->view->calist = $this->parseIcingaCaList();
+	         $list = $this->parseIcingaCaList();
+	         if ($list === false) {
+	             $this->view->authz=false;
+                     $this->view->authmsg=
+                          $this->translate("Error running command, please check sudo settings.");
+	         }
+                 else {
+	             $this->view->calist = $list;
+                 }
             } elseif ($this->params->has('fingerprint')) {
                  $this->view->sign = $this->signCertificate($this->params->shift('fingerprint'));
             } else {
@@ -101,9 +109,12 @@ class IndexController extends Controller
 			$command = $this->command . " ca list --all";
 		}
 
-		$output = shell_exec($command." 2>&1");
-        $temp = preg_split('/\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
-        $lines = preg_grep('/RLIMIT_/', $temp, PREG_GREP_INVERT);
+		$output = array();
+		$execres = exec($command." 2>&1", $output, $retcode);
+		if (!$execres || $retcode) {
+	            	return false;
+		}
+        $lines = preg_grep('/RLIMIT_/', $output, PREG_GREP_INVERT);
         $lines = array_values($lines);
 	# remove first 2 elements
         unset($lines[0]);
@@ -111,13 +122,14 @@ class IndexController extends Controller
 
 	$result = array();
         foreach ($lines as $line) {
-            preg_match('/(\w{64})\s+\|\s+([^|]+)\s+\|\s+(\*?)\s*\|\s+CN\s+=\s+(.*)/', $line, $parsed, PREG_OFFSET_CAPTURE);
-	    array_push($result, array(
-			"fingerprint"  => $parsed[1][0],
-	    		"timestamp"    => $parsed[2][0],
-            		"signed"       => $parsed[3][0],
-            		"subject"      => $parsed[4][0],
-		) );
+            if (preg_match('/(\w{64})\s+\|\s+([^|]+)\s+\|\s+(\*?)\s*\|\s+CN\s+=\s+(.*)/', $line, $parsed, PREG_OFFSET_CAPTURE)) {
+	        array_push($result, array(
+	            	"fingerprint"  => $parsed[1][0],
+	        	"timestamp"    => $parsed[2][0],
+                	"signed"       => $parsed[3][0],
+                	"subject"      => $parsed[4][0],
+	        ) );
+            }
 	}
 	return $result;
     }
