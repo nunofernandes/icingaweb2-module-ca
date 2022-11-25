@@ -4,10 +4,11 @@ use Icinga\Application\Config;
 use Icinga\Authentication\Auth;
 
 $auth = Auth::getInstance();
+
+$section = $this->menuSection(N_('CA'));
+
 if ($auth->hasPermission('ca/overview')){
-   $this->menuSection('System')
-     ->add('Certificate Authority')
-     ->setUrl('ca');
+   $section->add(N_('Certificate Authority'), ['url' => 'ca']);
 }
 
 $this->providePermission(
